@@ -1,0 +1,12 @@
+{
+  "compact": true,
+  "controlFlowFlattening": true,
+  "deadCodeInjection": true,
+  "stringArray": true,
+  "stringArrayThreshold": 0.8,
+  "rotateStringArray": true,
+  "transformObjectKeys": true,
+  "renameGlobals": true,
+  "disableConsole": true,
+  "identifierNamesGenerator": "hexadecimal"
+}
