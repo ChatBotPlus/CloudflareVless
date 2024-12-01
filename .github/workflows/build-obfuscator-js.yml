@@ -34,14 +34,14 @@ jobs:
       # 5. 创建新的 release（如果没有发布版本，先创建一个）
       - name: Create Release
         id: create_release
-        uses: gh-actions/create-release@v1.2
+        uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: 'This is a release with obfuscated worker.js'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          
       # 6. 上传混淆后的文件到 GitHub Release
       - name: Upload Obfuscated Worker to Release
         uses: gh-actions/upload-release-asset@v1.0.1
