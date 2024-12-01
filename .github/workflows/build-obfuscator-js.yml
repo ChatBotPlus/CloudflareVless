@@ -1,0 +1,52 @@
+name: Obfuscate and Release
+
+on:
+  push:
+    branches:
+      -main
+  workflow_dispatch:  # 允许手动触发工作流
+
+jobs:
+  obfuscate-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout 代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. 设置 Node.js 环境
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # 3. 安装 javascript-obfuscator
+      - name: Install dependencies
+        run: |
+          npm install -g javascript-obfuscator
+
+      # 4. 使用 javascript-obfuscator 混淆 worker.js
+      - name: Obfuscate worker.js
+        run: |
+          javascript-obfuscator worker.js --output output.js --config js-obfuscator-config.json
+
+      # 5. 创建新的 release（如果没有发布版本，先创建一个）
+      - name: Create Release
+        id: create_release
+        uses: gh-actions/create-release@v1.2
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: 'This is a release with obfuscated worker.js'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 6. 上传混淆后的文件到 GitHub Release
+      - name: Upload Obfuscated Worker to Release
+        uses: gh-actions/upload-release-asset@v1.0.1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: output.js
+          asset_name: "worker-${{ runner.id }}-output.js"
+          asset_content_type: application/javascript
