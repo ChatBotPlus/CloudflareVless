@@ -30,14 +30,23 @@ jobs:
       - name: Obfuscate worker.js
         run: |
           javascript-obfuscator worker.js --output output.js --config js-obfuscator-config.json
-
+      - name: Extract Tag Name
+        id: extract_tag
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+          else
+            TAG_NAME="v${GITHUB_SHA:0:7}"  # 如果没有标签，可以使用 commit hash 生成临时标签
+          fi
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          
       # 5. 创建新的 release（如果没有发布版本，先创建一个）
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: Release ${{ env.TAG_NAME }}
           body: 'This is a release with obfuscated worker.js'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
