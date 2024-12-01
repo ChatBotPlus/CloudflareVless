@@ -44,9 +44,11 @@ jobs:
           
       # 6. 上传混淆后的文件到 GitHub Release
       - name: Upload Obfuscated Worker to Release
-        uses: gh-actions/upload-release-asset@v1.0.1
+        uses:  actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: output.js
           asset_name: "worker-${{ runner.id }}-output.js"
           asset_content_type: application/javascript
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
