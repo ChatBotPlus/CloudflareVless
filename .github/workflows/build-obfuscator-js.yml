@@ -57,7 +57,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: output.js
-          asset_name: "worker-${{ runner.id }}-output.js"
+          asset_name: "worker-${{ github.run_number }}-output.js"
           asset_content_type: application/javascript
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
